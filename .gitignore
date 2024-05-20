@@ -67,3 +67,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Custom
+
+application.yml
