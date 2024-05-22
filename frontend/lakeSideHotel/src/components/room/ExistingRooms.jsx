@@ -5,6 +5,7 @@ import Col from 'react-bootstrap/Col';
 import { getAllRooms, deleteRoom } from '../utils/APIFunctions';
 import {FaTrashAlt, FaEye, FaEdit} from 'react-icons/fa'
 import { Link } from 'react-router-dom';
+import Loader from '../layout/loader/Loader';
 
 const ExistingRooms = () => {
   const [rooms, setRooms] = useState([]);
@@ -15,6 +16,7 @@ const ExistingRooms = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [selectedRoomType, setSelectedRoomType] = useState('');
+
 
   const fetchRooms = async () => {
     setIsLoading(true);
@@ -78,7 +80,7 @@ const ExistingRooms = () => {
   return (
     <>
       {isLoading ? (
-        <p>Loading...</p>
+        <Loader />
       ) : (
         <>
           <section className="container mt-5 mb-5">
@@ -98,16 +100,19 @@ const ExistingRooms = () => {
                 </tr>
               </thead>
               <tbody>
-                {currentRooms.map((room) => (
+                  <>
+                    {currentRooms.map((room) => (
                   <tr key={room.id} className="text-center">
                     <td>{room.id}</td>
                     <td>{room.roomType}</td>
                     <td>{room.roomPrice}</td>
                     <td className='gap-2'>
-                      <Link to={`/edit-room/${room.id}`}>
+                      <Link to={`/view-room/${room.id}`}>
                         <span className="btn btn-info btn-sm ms-2">
                           <FaEye />
                         </span>
+                      </Link>
+                      <Link to={`/edit-room/${room.id}`}>
                         <span className="btn btn-warning btn-sm ms-2">
                           <FaEdit />
                         </span>
@@ -120,6 +125,7 @@ const ExistingRooms = () => {
                     </td>
                   </tr>
                 ))}
+                  </>
               </tbody>
             </table>
             <RoomPaginator

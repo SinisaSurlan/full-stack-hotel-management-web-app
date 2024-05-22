@@ -53,5 +53,28 @@ export const deleteRoom = async (id) => {
         console.log(error);
     }
 }
+// This function updates a room
+export const editRoom = async (id, photo, roomType, roomPrice) => {
+    const formData = new FormData();
+    formData.append("photo", photo);
+    formData.append("roomType", roomType);
+    formData.append("roomPrice", roomPrice);
+    try {
+        const response = await axios.put(`http://localhost:9192/rooms/edit/room/${id}`, formData);
+        return response.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+// This function get a room by id
+export async function getRoomById(id) {
+    try {
+        const response = await axios.get(`http://localhost:9192/rooms/room/${id}`);
+        return response.data;
+    } catch (error) {
+        throw new Error(`Error retrieving room data ${error.message}`);
+    }      
+}
 
 
