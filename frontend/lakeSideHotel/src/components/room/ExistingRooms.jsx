@@ -13,14 +13,13 @@ const ExistingRooms = () => {
   const [filteredRooms, setFilteredRooms] = useState([]);
   const [activePage, setActivePage] = useState(1);
   const [roomsPerPage, setRoomsPerPage] = useState(8);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [selectedRoomType, setSelectedRoomType] = useState('');
 
 
   const fetchRooms = async () => {
-    setIsLoading(true);
     try {
       const response = await getAllRooms();
       setRooms(response);

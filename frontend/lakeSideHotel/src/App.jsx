@@ -5,6 +5,8 @@ import Home from './components/home/Home'
 import EditRoom from './components/room/EditRoom'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import ViewRoom from './components/room/ViewRoom'
+import Navbar from  './components/layout/navbar/Navbar';
+import Footer from './components/layout/footer/Footer';
 
 function App() {
 
@@ -12,6 +14,7 @@ function App() {
     <>
 
       <Router>
+        <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/edit-room/:id" element={<EditRoom />}/>
@@ -20,6 +23,7 @@ function App() {
           <Route path='/view-room/:id' element={<ViewRoom />} />
         </Routes>
       </Router>
+      <Footer />
     </>
   )
 }

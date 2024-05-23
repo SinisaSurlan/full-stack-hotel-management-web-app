@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { addRoom } from '../utils/APIFunctions';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import RoomTypeSelector from '../common/RoomTypeSelector';
 import {Link} from 'react-router-dom';
+import Loader from '../layout/loader/Loader';
 
 const AddRoom = () => {
   const[newRoom, setNewRoom] = useState({
@@ -15,6 +16,11 @@ const AddRoom = () => {
   const[imagePreview, setImagePreview] = useState("");
   const[successMessage, setSuccessMessage] = useState("");
   const[errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setIsLoading(false);
+  }, []);
 
   const handleRoomInputChange = (e) => {
     const name = e.target.name;
@@ -61,57 +67,63 @@ const AddRoom = () => {
 
   return (
     <>
-      <section className='container mt-5 mb-5'>
-        <div className='row justify-content-center'>
-          <div className='col-md-8 col-lg-6'>
-            <h2 className='mt-5 mb-2'>Add a New Room</h2>
-            {successMessage && <div className='alert alert-success'>{successMessage}</div>}
-            {errorMessage && <div className='alert alert-danger'>{errorMessage}</div>}
-            <form onSubmit={handleSubmit} action="">
-              <div className='mb-3 '>
-                <label htmlFor='roomType' className='form-label'>Room Type</label>
-                <div>
-                  <RoomTypeSelector handleRoomInputChange={handleRoomInputChange} newRoom={newRoom}/>  
+    {isLoading ? 
+    <Loader /> : (
+      <>
+        <section className='container mt-5 mb-5'>
+          <div className='row justify-content-center'>
+            <div className='col-md-8 col-lg-6'>
+              <h2 className='mt-5 mb-2'>Add a New Room</h2>
+              {successMessage && <div className='alert alert-success'>{successMessage}</div>}
+              {errorMessage && <div className='alert alert-danger'>{errorMessage}</div>}
+              <form onSubmit={handleSubmit} action="">
+                <div className='mb-3 '>
+                  <label htmlFor='roomType' className='form-label'>Room Type</label>
+                  <div>
+                    <RoomTypeSelector handleRoomInputChange={handleRoomInputChange} newRoom={newRoom}/>  
+                  </div>
                 </div>
-              </div>
-              <div className='mb-3 '>
-                <label htmlFor='roomPrice' className='form-label'>Room Price</label>
-                <input type="number" 
-                  className='form-control'
-                  required
-                  id='roomPrice'
-                  name = 'roomPrice'
-                  value={newRoom.roomPrice}
-                  onChange={handleRoomInputChange} 
-                />
-              </div>
-              <div className='mb-3 '>
-                <label htmlFor='photo' className='form-label'>Room Photo</label>
-                <input 
-                  type="file"
-                  id = "photo"
-                  name = "photo"
-                  className='form-control'
-                  onChange={handleImageChange}
-                />
-                {imagePreview && (
-                  <img src={imagePreview}
-                    alt='Preview room photo'
-                    style={{maxWidth: "400px", maxHeight: "400px"}}
-                    className='mb-3'
+                <div className='mb-3 '>
+                  <label htmlFor='roomPrice' className='form-label'>Room Price</label>
+                  <input type="number" 
+                    className='form-control'
+                    required
+                    id='roomPrice'
+                    name = 'roomPrice'
+                    value={newRoom.roomPrice}
+                    onChange={handleRoomInputChange} 
                   />
-                )}
-              </div>
-              <div className='d-grid d-md-flex mt-2'>
-                <button type='submit' className='btn btn-outline-primary me-md-2 ml-5'>Save Room</button>
-                <Link to="/existing-rooms"><button className="btn btn-outline-secondary me-md-2 ml-5">Go Back</button></Link>
+                </div>
+                <div className='mb-3 '>
+                  <label htmlFor='photo' className='form-label'>Room Photo</label>
+                  <input 
+                    type="file"
+                    id = "photo"
+                    name = "photo"
+                    className='form-control'
+                    onChange={handleImageChange}
+                  />
+                  {imagePreview && (
+                    <img src={imagePreview}
+                      alt='Preview room photo'
+                      style={{maxWidth: "400px", maxHeight: "400px"}}
+                      className='mb-3'
+                    />
+                  )}
+                </div>
+                <div className='d-grid d-md-flex mt-2'>
+                  <button type='submit' className='btn btn-outline-primary me-md-2 ml-5'>Save Room</button>
+                  <Link to="/existing-rooms"><button className="btn btn-outline-secondary me-md-2 ml-5">Go Back</button></Link>
 
-              </div>
-            </form>
+                </div>
+              </form>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </>
+    )}
     </>
+    
   )
 }
 

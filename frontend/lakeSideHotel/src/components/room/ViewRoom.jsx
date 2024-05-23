@@ -4,6 +4,7 @@ import { getRoomById } from '../utils/APIFunctions';
 import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState, useEffect } from 'react';
+import Loader from '../layout/loader/Loader';
 
 const ViewRoom = () => {
     const [room, setRoom] = useState({
@@ -14,6 +15,7 @@ const ViewRoom = () => {
 
     const { id } = useParams();
     const [imagePreview, setImagePreview] = useState("");
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -27,6 +29,7 @@ const ViewRoom = () => {
           const blob = new Blob([new Uint8Array(array)], { type: 'image/png' });
           const url = URL.createObjectURL(blob);
           setImagePreview(url);
+          setIsLoading(false);
           console.log(data);
         };
         fetchData();
@@ -34,47 +37,53 @@ const ViewRoom = () => {
 
   return (
     <>
-      <section className='container mt-5 mb-5'>
-        <div className='row justify-content-center'>
-          <div className='col-md-8 col-lg-6'>
-            <h2 className='mt-5 mb-2'>Room Preview</h2>
-                <table className='table table-hover  mt-5 mb-5'>
-                    <tbody>
-                        <tr className='table-info'>
-                            <th scope="col">Key</th>
-                            <th scope="col">Value</th>
-                        </tr>
-                        <tr>
-                            <td>Room Id</td>
-                            <td>{id}</td>
-                        </tr>
-                        <tr>
-                            <td>Room Type</td>
-                            <td>{room.roomType}</td>
-                        </tr>
-                        <tr>
-                            <td>Room Price</td>
-                            <td>{room.roomPrice}</td>
-                        </tr>
-                        <tr>
-                            <td>Room Photo</td>
-                            <td><img src={imagePreview} alt='Preview room photo' style={{maxWidth: "400px", maxHeight: "400px"}} /></td>
-                        </tr>
-                    </tbody>
-                </table>
-              <div className='d-grid d-md-flex mt-2'>
-                <Link to={`/edit-room/${id}`} className="btn btn-outline-info me-md-2">
-                    Edit Room
-                </Link>
-                <Link to="/existing-rooms" className="btn btn-outline-danger me-md-2">
-                    Go Back
-                </Link>
-              </div>
-          </div>
-        </div>
-      </section>
-    </>
-  )
+            {isLoading ? (
+                <Loader />
+            ) : (
+               <>
+                  <section className='container mt-5 mb-5'>
+                    <div className='row justify-content-center'>
+                      <div className='col-md-8 col-lg-6'>
+                        <h2 className='mt-5 mb-2'>Room Preview</h2>
+                            <table className='table table-hover  mt-5 mb-5'>
+                                <tbody>
+                                    <tr className='table-info'>
+                                        <th scope="col">Key</th>
+                                        <th scope="col">Value</th>
+                                    </tr>
+                                    <tr>
+                                        <td>Room Id</td>
+                                        <td>{id}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Room Type</td>
+                                        <td>{room.roomType}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Room Price</td>
+                                        <td>{room.roomPrice}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Room Photo</td>
+                                        <td><img src={imagePreview} alt='Preview room photo' style={{maxWidth: "400px", maxHeight: "400px"}} /></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                          <div className='d-grid d-md-flex mt-2'>
+                            <Link to={`/edit-room/${id}`} className="btn btn-outline-info me-md-2">
+                                Edit Room
+                            </Link>
+                            <Link to="/existing-rooms" className="btn btn-outline-danger me-md-2">
+                                Go Back
+                            </Link>
+                          </div>
+                      </div>
+                    </div>
+                  </section>
+                </>
+            )}
+        </>
+    )
 }
 
 export default ViewRoom
