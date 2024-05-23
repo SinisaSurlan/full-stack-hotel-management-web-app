@@ -1,10 +1,12 @@
 package com.sinisa.lakeSideHotel.service;
 
+import com.sinisa.lakeSideHotel.exception.InternalServerException;
 import com.sinisa.lakeSideHotel.exception.ResourceNotFoundException;
 import com.sinisa.lakeSideHotel.model.Room;
 import com.sinisa.lakeSideHotel.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -62,6 +64,27 @@ public class RoomService implements IRoomService{
         if(room.isPresent()){
             roomRepository.deleteById(roomId);
         }
+    }
+
+    @Override
+    public Room updateRoom(Long roomId, String roomType, BigDecimal roomPrice, byte[] photoBytes) {
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new ResourceNotFoundException("Room not found"));
+        if(roomType != null) room.setRoomType(roomType);
+        if(roomPrice != null) room.setRoomPrice(roomPrice);
+        if(photoBytes != null && photoBytes.length > 0){
+            try {
+                room.setPhoto(new SerialBlob(photoBytes));
+            } catch (SQLException ex){
+                throw new InternalServerException("Error updating room", ex);
+            }
+        }
+        return roomRepository.save(room);
+    }
+
+    @Override
+    public Optional<Room> getRoomById(Long roomId) {
+        return roomRepository.findById(roomId);
     }
 
 

@@ -69,12 +69,14 @@ export const editRoom = async (id, photo, roomType, roomPrice) => {
 
 // This function get a room by id
 export async function getRoomById(id) {
+    console.log('ID:', id);
     try {
         const response = await axios.get(`http://localhost:9192/rooms/room/${id}`);
         return response.data;
     } catch (error) {
+        console.error(`Error retrieving room data: ${error.message}`);
         throw new Error(`Error retrieving room data ${error.message}`);
-    }      
+    }
 }
 
 

@@ -1,14 +1,14 @@
-import React, { useEffect } from 'react'
-import { useState } from 'react'
-import { editRoom } from '../utils/APIFunctions';
+import React from 'react'
+import { getRoomById, editRoom } from '../utils/APIFunctions';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { getRoomById } from '../utils/APIFunctions';
-import { Link } from 'react-router-dom';
 import RoomTypeSelector from '../common/RoomTypeSelector';
+import { Link } from 'react-router-dom';
 
 const EditRoom = () => {
-  const[room, setRoom] = useState({
+
+  const [room, setRoom] = useState({
     photo: null,
     roomType: "",
     roomPrice: ""
@@ -19,28 +19,45 @@ const EditRoom = () => {
   const[successMessage, setSuccessMessage] = useState("");
   const[errorMessage, setErrorMessage] = useState("");
 
-  const {roomId} = useParams();
+  const {id} = useParams();
 
   useEffect(() => {
-    const fetchRoom = async () => {
-      try { 
-        const roomData = await getRoomById(roomId);
-        setRoom(roomData);
-        setImagePreview(roomData.photo);
-      } catch (error) {
-        console.log(error);
+    const fetchData = async () => {
+      const data = await getRoomById(id);
+      setRoom(data);
+      const binary = atob(data.photo);
+      const array = [];
+      for (let i = 0; i < binary.length; i++) {
+        array.push(binary.charCodeAt(i));
       }
-      
-    }
-    fetchRoom();
-  }, [roomId]);
+      const blob = new Blob([new Uint8Array(array)], { type: 'image/png' });
+      const url = URL.createObjectURL(blob);
+      setImagePreview(url);
+      console.log(data);
+    };
+    fetchData();
+  }, [id]);
 
-  
-
-  const handleImageChange = (e) => {
-    const selectedImage = e.target.files[0];
-    setRoom({...room, photo: selectedImage});
-    setImagePreview(URL.createObjectURL(selectedImage));
+  const handleSubmit = async(e) => {
+    e.preventDefault();
+    try {
+      const success = await editRoom(id, room.photo, room.roomType, room.roomPrice);
+      if(success != undefined){
+        setSuccessMessage("A new room was added to the database!");
+        setRoom({photo:null, roomType:"", roomPrice:""});
+        setImagePreview("");
+        setErrorMessage("");
+        setTimeout(() => setSuccessMessage(""), 3000);
+      } else {
+        setErrorMessage("Error adding room");
+      }
+    } catch (error) {
+      setErrorMessage(error.message);
+    } 
+    setTimeout(() => {
+      setSuccessMessage("");
+      setErrorMessage("");  
+    }, 3000);
   }
 
   const handleRoomInputChange = (e) => {
@@ -57,27 +74,10 @@ const EditRoom = () => {
     setRoom({...room, [name]: value})
   }
 
-  const handleSubmit = async(e) => {
-    e.preventDefault();
-    try {
-      const success = await editRoom(id, room.photo, room.roomType, room.roomPrice);
-      if(success != undefined){
-        setSuccessMessage("A new room was added to the database!");
-        const updatedRoomData = await getRoomById(roomId);
-        setRoom(updatedRoomData);
-        setImagePreview("");
-        setErrorMessage("");
-      } else {
-        setErrorMessage("Error updating room");
-      }
-    } catch (error) {
-      setErrorMessage(error.message);
-      console.log(error);
-    } 
-    setTimeout(() => {
-      setSuccessMessage("");
-      setErrorMessage("");  
-    }, 3000);
+  const handleImageChange = (e) => {
+    const selectedImage = e.target.files[0];
+    setRoom({...room, photo: selectedImage});
+    setImagePreview(URL.createObjectURL(selectedImage));
   }
 
   return (
@@ -85,7 +85,7 @@ const EditRoom = () => {
       <section className='container mt-5 mb-5'>
         <div className='row justify-content-center'>
           <div className='col-md-8 col-lg-6'>
-            <h2 className='mt-5 mb-2'>Add a New Room</h2>
+            <h2 className='mt-5 mb-2'>Edit existing Room</h2>
             {successMessage && <div className='alert alert-success'>{successMessage}</div>}
             {errorMessage && <div className='alert alert-danger'>{errorMessage}</div>}
             <form onSubmit={handleSubmit} action="">
@@ -124,8 +124,8 @@ const EditRoom = () => {
                 )}
               </div>
               <div className='d-grid d-md-flex mt-2'>
-                <button className='btn btn-outline-primary ml-5'>Edit Room</button>
-                <Link to={"/existing-rooms"} className='btn btn-outline-secondary'>Go back</Link>
+                <button type='submit' className='btn btn-outline-primary me-md-2'>Edit Room</button>
+                <Link to="/existing-rooms" className='btn btn-outline-danger me-md-2'>Cancel</Link>
               </div>
             </form>
           </div>

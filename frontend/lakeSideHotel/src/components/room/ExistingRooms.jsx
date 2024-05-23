@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import RoomFilter from '../common/RoomFilter';
 import RoomPaginator from '../common/RoomPaginator';
 import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
 import { getAllRooms, deleteRoom } from '../utils/APIFunctions';
-import {FaTrashAlt, FaEye, FaEdit} from 'react-icons/fa'
+import {FaTrashAlt, FaEye, FaEdit, FaPlus} from 'react-icons/fa'
 import { Link } from 'react-router-dom';
 import Loader from '../layout/loader/Loader';
 
@@ -84,12 +85,17 @@ const ExistingRooms = () => {
       ) : (
         <>
           <section className="container mt-5 mb-5">
-            <div className="d-flex justify-content-center mb-3 mt-5">
+            <div className="d-flex justify-content-between mb-3 mt-5 ">
               <h2>Existing Rooms</h2>
             </div>
-            <Col md={6} className="mb-3 mb-md-0">
-              <RoomFilter data={rooms} setFiltered={setFilteredRooms} handleSelectChange={handleSelectChange} />
-            </Col>
+            <Row>
+              <Col md={6} className="mb-3 mb-md-0">
+                <RoomFilter data={rooms} setFiltered={setFilteredRooms} handleSelectChange={handleSelectChange} />
+              </Col>
+              <Col md={6} className="d-flex justify-content-end align-items-start">
+                <Link to={"/add-room"} className='d-flex justify-content-end align-items-center'><FaPlus className='me-2' /> Add Room</Link>
+              </Col>
+            </Row>
             <table className="table table-hover table-bordered">
               <thead>
                 <tr className="text-center">
