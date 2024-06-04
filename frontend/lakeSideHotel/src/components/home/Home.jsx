@@ -1,10 +1,22 @@
 import React from 'react'
+import MainHeader from '../layout/header/MainHeader'
+import HotelService from '../common/HotelService'
+import Parallax from '../common/Parallax'
+import RoomCarousel from '../common/RoomCarousel'
 
 const Home = () => {
   return (
-    <div>
-      <h2>Welcome to Lake Side Hotel</h2>
-    </div>
+    <section>
+      <MainHeader />
+      <section className='container'>
+        <RoomCarousel />
+        <Parallax />
+        <RoomCarousel />
+        <HotelService />
+        <Parallax />
+        <RoomCarousel />
+      </section>
+    </section>
   )
 }
 
