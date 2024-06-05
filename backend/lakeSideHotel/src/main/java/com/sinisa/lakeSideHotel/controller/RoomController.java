@@ -4,13 +4,11 @@ import com.sinisa.lakeSideHotel.exception.PhotoRetrievalException;
 import com.sinisa.lakeSideHotel.exception.ResourceNotFoundException;
 import com.sinisa.lakeSideHotel.model.BookedRoom;
 import com.sinisa.lakeSideHotel.model.Room;
-import com.sinisa.lakeSideHotel.response.BookingResponse;
 import com.sinisa.lakeSideHotel.response.RoomResponse;
-import com.sinisa.lakeSideHotel.service.BookingSerivce;
+import com.sinisa.lakeSideHotel.service.BookingService;
 import com.sinisa.lakeSideHotel.service.IRoomService;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +29,7 @@ import java.util.Optional;
 
 public class RoomController {
     private final IRoomService roomService;
-    private final BookingSerivce bookingSerivce;
+    private final BookingService bookingSerivce;
 
     @PostMapping("/add/new-room")
     public ResponseEntity<RoomResponse> addNewRoom(
